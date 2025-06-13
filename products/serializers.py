@@ -23,3 +23,18 @@ class ProductSerializer(serializers.ModelSerializer):
                 'category', 'created_at', 'updated_at', 'is_active', 'image', 'stock','category_id']
         read_only_fields = ['created_at', 'updated_at']
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only = True)
+
+    class Meta:
+        model = models.OrderItem
+        fields = ['id', 'product', 'quantity', 'price', 'created_at', 'updated_at', 'order']
+        read_only_fields = ['created_at', 'updated_at']
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Order
+        fields = ['id', 'user', 'created_at', 'updated_at', 'total_amount', 'status', 'order_items']
+        read_only_fields = ['created_at', 'updated_at', 'user']

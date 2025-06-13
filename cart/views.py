@@ -19,7 +19,7 @@ class CartItemViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CartItemSerializer
 
     def get_queryset(self) -> Any:
-        return models.CartItem.objects.filter(cart__user=self.request.user)
+        return models.CartItem.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer: serializers.CartItemSerializer):
         serializer.save(cart=self.request.user)
