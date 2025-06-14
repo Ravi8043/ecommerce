@@ -44,3 +44,4 @@ class OrderItemViewSet(viewsets.ModelViewSet):
         return models.OrderItem.objects.filter(user=self.request.user)
     def perform_create(self, serializer: serializers.OrderItemSerializer) -> Any:
         serializer.save(user=self.request.user)
+    
