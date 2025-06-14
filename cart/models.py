@@ -32,4 +32,5 @@ class CartItem(models.Model):
         unique_together = ('cart', 'product')
 
     def __str__(self):
-        return f"{self.quantity} of {self.product.name} in {self.cart.user.username}'s cart"
+        return f"{self.quantity} of {self.product.product_name} in {self.cart.user.username}'s cart"
+    

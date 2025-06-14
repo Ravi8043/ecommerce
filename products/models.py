@@ -6,17 +6,17 @@ if TYPE_CHECKING:
     from django.db.models import QuerySet
 
 class ProductCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    category_name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.name
+        return self.category_name
     
 class Product(models.Model):
-    name = models.CharField(max_length=200)
+    product_name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(
@@ -31,7 +31,7 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.name} - {self.category.name}"
+        return f"{self.product_name} - {self.category.category_name}"
 
 class Address(models.Model):
     user = models.ForeignKey(
@@ -84,7 +84,6 @@ class Order(models.Model):
     def __str__(self):
         return f"Order {self.user.username} - {self.status}"
     def calculate_total(self):
-        """Calculate total price from order items"""
         # Method 1: Using getattr (safest for type checkers)
         order_items = getattr(self, 'order_items')
         return sum(
@@ -119,9 +118,9 @@ class OrderItem(models.Model):
     class Meta:
         unique_together = ('order', 'product')
     def __str__(self):
-        return f"{self.quantity} of {self.product.name} in {self.order.user.username}'s order"
+        return f"{self.quantity} of {self.product.product_name} in {self.order.user.username}'s order"
     
-    #check this property again
+
     @property
     def item_total(self):
         """Calculate total for this specific item"""
@@ -135,7 +134,6 @@ class OrderItem(models.Model):
     
     # Override delete to update order total when item is deleted
     # This is important to ensure the order total is recalculated
-    #check it again
     def delete(self, *args, **kwargs) -> Any:
         """Override delete to update order total when item is deleted"""
         order = self.order
