@@ -42,7 +42,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         return models.Order.objects.filter(user=self.request.user)
     
     def perform_create(self, serializer: serializers.OrderSerializer):
-        serializer.save(user=self.request.user)
+        order = models.Order.objects.create(user=self.request.user)
+        serializer.save(order=order)
  
 
 
@@ -51,10 +52,15 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.OrderItemSerializer
 
     def get_queryset(self) -> Any:
-        return models.OrderItem.objects.filter(user=self.request.user)
+        return models.OrderItem.objects.filter(order__user=self.request.user)
     def perform_create(self, serializer: serializers.OrderItemSerializer) -> Any:
-        serializer.save(user=self.request.user)
-    
+    # Get or create an order for the current user
+        order, created = models.Order.objects.get_or_create(
+        user=self.request.user,
+        defaults={'status': 'pending'}  # or whatever default status you want
+    )
+        serializer.save(order=order)
+        
     @action(detail=False, methods=['post'])
     def add_to_order(self, request, *args, **kwargs):
         property_id = request.data.get('product_id')

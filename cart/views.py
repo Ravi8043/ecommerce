@@ -23,8 +23,12 @@ class CartItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self) -> Any:
         return models.CartItem.objects.filter(cart__user=self.request.user)
 
-    def perform_create(self, serializer: serializers.CartItemSerializer):
-        serializer.save(cart__user=self.request.user)
+    def perform_create(self, serializer: serializers.CartItemSerializer) -> Any:
+    # Get or create a cart for the current user
+        cart, created = models.Cart.objects.get_or_create(
+        user=self.request.user,
+    )
+        serializer.save(cart=cart)
     
     @action(detail=False, methods=['post'])
     def add_to_cart(self, request, *args, **kwargs):

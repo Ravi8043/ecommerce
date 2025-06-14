@@ -40,7 +40,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = models.OrderItem
-        fields = ['id', 'product', 'quantity', 'price', 'created_at', 'updated_at', 'order','product_id']
+        fields = ['id', 'product', 'quantity', 'price', 'created_at', 'updated_at', 'order', 'product_id','item_price']
         read_only_fields = ['created_at', 'updated_at']
     def get_item_price(self, obj):
         return obj.product.price * obj.quantity
@@ -50,7 +50,7 @@ class OrderSerializer(serializers.ModelSerializer):
     calculated_total = serializers.SerializerMethodField()
     class Meta:
         model = models.Order
-        fields = ['id', 'user', 'created_at', 'updated_at', 'total_amount', 'status', 'order_items']
+        fields = ['id', 'user', 'created_at', 'updated_at', 'total_amount', 'status', 'order_items','calculated_total']
         read_only_fields = ['created_at', 'updated_at', 'user']
     def get_calculated_total(self, obj):
         return obj.calculate_total()
