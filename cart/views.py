@@ -5,10 +5,12 @@ from django.contrib.auth.models import User
 from typing import Any
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 class CartViewSet(viewsets.ModelViewSet):
     queryset = models.Cart.objects.all()
     serializer_class = serializers.CartSerializer
+    permission_classes = [IsAuthenticated,]
 
     def get_queryset(self) -> Any:
         return models.Cart.objects.filter(user = self.request.user)
@@ -19,6 +21,7 @@ class CartViewSet(viewsets.ModelViewSet):
 class CartItemViewSet(viewsets.ModelViewSet):
     queryset = models.CartItem.objects.all()
     serializer_class = serializers.CartItemSerializer
+    permission_classes = [IsAuthenticated,]
 
     def get_queryset(self) -> Any:
         return models.CartItem.objects.filter(cart__user=self.request.user)
