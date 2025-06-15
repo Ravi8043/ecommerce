@@ -133,7 +133,6 @@ class OrderItem(models.Model):
         self.order.save()
     
     # Override delete to update order total when item is deleted
-    # This is important to ensure the order total is recalculated
     def delete(self, *args, **kwargs) -> Any:
         """Override delete to update order total when item is deleted"""
         order = self.order
